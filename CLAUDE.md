@@ -1,8 +1,9 @@
-# MAGA (Make AI Great Again) — Project Guide for Claude Code
+# ALM (AnyLM — Any Device, Any Language Model) — Project Guide for Claude Code
 
 ## Project Overview
 
-A research project for compressing commercial AI models to on-device scale.
+ALM (AnyLM) — Any model, any device, anywhere.
+An open-source research project for compressing commercial AI models to on-device scale.
 The ultimate goal is to enable researchers to conveniently use AI models
 on any environment — mobile, laptop, edge devices, etc.
 

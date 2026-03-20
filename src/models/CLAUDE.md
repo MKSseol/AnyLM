@@ -23,7 +23,7 @@ class ModelLoader:
 ```
 
 ## Implementation Rules
-- Model download path: `~/.cache/maga/models/` (overridable via `MAGA_MODEL_CACHE` env var)
+- Model download path: `~/.cache/alm/models/` (overridable via `ALM_MODEL_CACHE` env var)
 - Verify SHA256 checksum on model load
 - Provide memory estimation method: `estimate_memory(model_name, quantization) -> int` (in MB)
 - Auto-detect GPU/CPU, overridable via config

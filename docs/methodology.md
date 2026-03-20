@@ -1,4 +1,4 @@
-# MAGA — Research Methodology
+# ALM — Research Methodology
 
 ## Approach
 

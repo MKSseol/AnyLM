@@ -64,7 +64,7 @@ def main(config_path: str, steps: list[str]) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Run MAGA experiment pipeline."
+        description="Run ALM experiment pipeline."
     )
     parser.add_argument(
         "--config",

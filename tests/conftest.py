@@ -1,4 +1,4 @@
-"""Shared test fixtures for MAGA project."""
+"""Shared test fixtures for ALM project."""
 
 import tempfile
 from pathlib import Path

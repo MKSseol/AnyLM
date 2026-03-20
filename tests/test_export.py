@@ -37,4 +37,4 @@ class TestModelLoader:
 
     def test_cache_dir_default(self, sample_config) -> None:
         loader = ModelLoader(sample_config)
-        assert "maga" in str(loader.cache_dir)
+        assert "alm" in str(loader.cache_dir)

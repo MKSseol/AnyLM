@@ -16,7 +16,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-DEFAULT_CACHE_DIR = Path.home() / ".cache" / "maga" / "models"
+DEFAULT_CACHE_DIR = Path.home() / ".cache" / "alm" / "models"
 
 
 def main(model_name: str, cache_dir: str | None = None) -> None:

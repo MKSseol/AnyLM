@@ -11,8 +11,8 @@ from typing import Any
 
 logger = logging.getLogger(__name__)
 
-_DEFAULT_CACHE_DIR = Path.home() / ".cache" / "maga" / "models"
-_CACHE_DIR = Path(os.environ.get("MAGA_MODEL_CACHE", str(_DEFAULT_CACHE_DIR)))
+_DEFAULT_CACHE_DIR = Path.home() / ".cache" / "alm" / "models"
+_CACHE_DIR = Path(os.environ.get("ALM_MODEL_CACHE", str(_DEFAULT_CACHE_DIR)))
 
 _FRAMEWORK_REGISTRY: dict[str, str] = {
     "transformers": "_load_transformers",

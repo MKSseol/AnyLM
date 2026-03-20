@@ -1,8 +1,8 @@
-# MAGA — Architecture
+# ALM — Architecture
 
 ## Overview
 
-MAGA follows a modular architecture where each component has a single responsibility
+ALM follows a modular architecture where each component has a single responsibility
 and communicates through well-defined interfaces.
 
 ## Module Dependency Graph

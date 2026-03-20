@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Setup MAGA development environment.
+# Setup ALM development environment.
 # Usage: bash scripts/setup_env.sh [--gpu]
 
 set -euo pipefail
@@ -25,7 +25,7 @@ for arg in "$@"; do
     esac
 done
 
-echo "=== MAGA Environment Setup ==="
+echo "=== ALM Environment Setup ==="
 
 # Check Python version
 python_version=$(python3 --version 2>&1 | awk '{print $2}')

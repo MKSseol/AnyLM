@@ -1,10 +1,10 @@
-# MAGA — Make AI Great Again
+# ALM — AnyLM
 
-> Commercial AI models, optimized for on-device. For anyone, anywhere.
+> Any model, any device, anywhere.
 
 ## Vision
 
-MAGA is a research project focused on compressing commercial-grade AI models
+ALM is an open-source research project focused on compressing commercial-grade AI models
 to run on resource-constrained devices — smartphones, laptops, and edge hardware
 with as little as 4 GB of RAM.
 
@@ -29,8 +29,8 @@ optimizing it to run efficiently on smartphone-grade hardware.
 
 ```bash
 # Clone the repository
-git clone https://github.com/MKSseol/MAGA.git
-cd MAGA
+git clone https://github.com/MKSseol/ALM.git
+cd ALM
 
 # Setup environment (CPU only)
 bash scripts/setup_env.sh
@@ -67,7 +67,7 @@ python scripts/run_experiment.py --config configs/nllb_int8.yaml --steps all
 ## Project Structure
 
 ```
-MAGA/
+ALM/
 ├── configs/           # Experiment YAML configurations
 ├── src/
 │   ├── models/        # Unified model loading (Transformers, CTranslate2, ONNX)

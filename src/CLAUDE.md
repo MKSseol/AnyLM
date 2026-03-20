@@ -1,7 +1,7 @@
 # src/ — Core Source Code
 
 ## Role
-All reusable code for the MAGA project lives here.
+All reusable code for the ALM project lives here.
 Experiment scripts (`experiments/`) import and use this package.
 
 ## Module Structure
