@@ -1,0 +1,5 @@
+-r base.txt
+auto-gptq>=0.6.0
+autoawq>=0.1.8
+optimum>=1.16.0
+onnxruntime-gpu>=1.16.0

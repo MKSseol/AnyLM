@@ -1,0 +1,47 @@
+# Experiment metadata
+experiment:
+  name: "nllb-baseline"
+  description: "NLLB-200 Distilled 600M baseline performance measurement (FP32)"
+  date: "2025-03-20"
+  author: "minkyu"
+
+# Model settings
+model:
+  name: "facebook/nllb-200-distilled-600M"
+  revision: "main"
+  framework: "transformers"
+
+# Quantization settings
+quantization:
+  method: "none"
+  calibration_samples: 0
+  group_size: 0
+
+# Benchmark settings
+benchmark:
+  language_pairs:
+    - "kor_Hang-eng_Latn"
+    - "eng_Latn-kor_Hang"
+    - "kor_Hang-jpn_Jpan"
+    - "jpn_Jpan-kor_Hang"
+  test_dataset: "flores200"
+  num_samples: 100
+  num_repeats: 3
+  metrics:
+    - "bleu"
+    - "latency_p50"
+    - "latency_p99"
+    - "peak_memory_mb"
+  batch_sizes:
+    - 1
+    - 4
+    - 16
+
+# Hardware environment
+hardware:
+  device: "cpu"
+  max_memory_mb: 8192
+  num_threads: 4
+
+# Seed
+seed: 42
