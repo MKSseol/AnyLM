@@ -1,4 +1,4 @@
-# ALM (AnyLM — Any Device, Any Language Model) — Project Guide for Claude Code
+# ALM (AnyLM) — Project Guide for Claude Code
 
 ## Project Overview
 
