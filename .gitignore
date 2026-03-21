@@ -25,7 +25,8 @@ env/
 
 # Data (large files)
 data/models/
-data/test_sets/flores200/
+# FLORES-200 full dataset is downloaded at runtime; sample data is tracked
+# data/test_sets/flores200/
 
 # OS
 .DS_Store

@@ -14,7 +14,10 @@ optimizing it to run efficiently on smartphone-grade hardware.
 ## Current Progress
 
 - [x] Project structure design
-- [ ] Phase 1: NLLB-200 quantization benchmark (INT8)
+- [x] Phase 1 code: quantization, benchmark, metrics pipeline
+- [x] Unit tests (36/36 passing) + integration tests
+- [x] FLORES-200 download tooling + sample test data
+- [ ] Phase 1 experiment: NLLB-200 quantization benchmark (INT8)
 - [ ] Phase 2: Translation-specific optimization (GPTQ, AWQ)
 - [ ] Phase 3: Custom compression (pruning, distillation)
 - [ ] Phase 4: General-purpose model expansion
@@ -39,26 +42,35 @@ bash scripts/setup_env.sh
 bash scripts/setup_env.sh --gpu
 ```
 
-### Download the model
+### Download data and model
 
 ```bash
 source .venv/bin/activate
+
+# Download FLORES-200 test data (ko, en, ja)
+python scripts/download_flores.py
+
+# Download the NLLB-200 model (~1.2 GB)
 python scripts/download_model.py --model facebook/nllb-200-distilled-600M
 ```
 
-### Run baseline benchmark
+### Run experiments (in order)
 
 ```bash
+# 1. Baseline FP32 benchmark
 python experiments/nllb_optimization/01_baseline.py --config configs/nllb_baseline.yaml
-```
 
-### Run INT8 quantization experiment
-
-```bash
+# 2. INT8 quantization + comparison
 python experiments/nllb_optimization/02_quantize.py --config configs/nllb_int8.yaml
+
+# 3. Device simulation (memory/thread constraints)
+python experiments/nllb_optimization/03_benchmark.py --config configs/nllb_int8.yaml
+
+# 4. Post-quantization analysis
+python experiments/nllb_optimization/04_analysis.py --config configs/nllb_int8.yaml
 ```
 
-### Run full pipeline
+### Run full pipeline (all steps)
 
 ```bash
 python scripts/run_experiment.py --config configs/nllb_int8.yaml --steps all
@@ -91,11 +103,13 @@ Phase 1 results will be documented in `docs/findings/` after experiments are com
 ## Testing
 
 ```bash
-# Run all tests (excluding slow tests that require model downloads)
-pytest -m "not slow"
+source .venv/bin/activate
 
-# Run all tests including slow ones
-pytest
+# Run all tests (36 unit + integration tests)
+pytest tests/ -v
+
+# Run only fast tests (no model downloads)
+pytest -m "not slow"
 ```
 
 ## Contributing

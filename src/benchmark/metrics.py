@@ -26,6 +26,10 @@ def compute_bleu(hypotheses: list[str], references: list[str]) -> float:
     """
     import sacrebleu
 
+    if not hypotheses or not references:
+        logger.warning("Empty input for BLEU computation, returning 0.0")
+        return 0.0
+
     result = sacrebleu.corpus_bleu(hypotheses, [references])
     logger.info("BLEU score: %.2f", result.score)
     return result.score
