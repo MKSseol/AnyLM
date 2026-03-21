@@ -39,7 +39,7 @@ class DynamicInt8Quantizer(BaseQuantizer):
         original_size = self._estimate_model_size(model)
         logger.info("Original model size (params): %.1f MB", original_size)
 
-        quantized_model = torch.quantization.quantize_dynamic(
+        quantized_model = torch.ao.quantization.quantize_dynamic(
             model,
             {torch.nn.Linear},
             dtype=torch.qint8,
