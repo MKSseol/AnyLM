@@ -6,8 +6,8 @@ Usage:
 """
 
 import argparse
-import importlib
 import logging
+import subprocess
 import sys
 from pathlib import Path
 
@@ -17,12 +17,12 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Map step names to experiment scripts
-STEP_MODULES = {
-    "baseline": "experiments.nllb_optimization.01_baseline",
-    "quantize": "experiments.nllb_optimization.02_quantize",
-    "benchmark": "experiments.nllb_optimization.03_benchmark",
-    "analysis": "experiments.nllb_optimization.04_analysis",
+# Map step names to experiment script paths (relative to project root)
+STEP_SCRIPTS = {
+    "baseline": "experiments/nllb_optimization/01_baseline.py",
+    "quantize": "experiments/nllb_optimization/02_quantize.py",
+    "benchmark": "experiments/nllb_optimization/03_benchmark.py",
+    "analysis": "experiments/nllb_optimization/04_analysis.py",
 }
 
 STEP_ORDER = ["baseline", "quantize", "benchmark", "analysis"]
@@ -35,9 +35,7 @@ def main(config_path: str, steps: list[str]) -> None:
         config_path: Path to the YAML configuration file.
         steps: List of step names to run.
     """
-    # Ensure project root is on path
     project_root = Path(__file__).resolve().parents[1]
-    sys.path.insert(0, str(project_root))
 
     if "all" in steps:
         steps = STEP_ORDER
@@ -46,16 +44,27 @@ def main(config_path: str, steps: list[str]) -> None:
     logger.info("Config: %s", config_path)
 
     for step in steps:
-        if step not in STEP_MODULES:
-            logger.error("Unknown step: %s. Available: %s", step, list(STEP_MODULES.keys()))
+        if step not in STEP_SCRIPTS:
+            logger.error("Unknown step: %s. Available: %s", step, list(STEP_SCRIPTS.keys()))
+            sys.exit(1)
+
+        script_path = project_root / STEP_SCRIPTS[step]
+        if not script_path.exists():
+            logger.error("Script not found: %s", script_path)
             sys.exit(1)
 
         logger.info("=" * 60)
         logger.info("Running step: %s", step)
         logger.info("=" * 60)
 
-        module = importlib.import_module(STEP_MODULES[step])
-        module.main(config_path)
+        result = subprocess.run(
+            [sys.executable, str(script_path), "--config", config_path],
+            cwd=str(project_root),
+        )
+
+        if result.returncode != 0:
+            logger.error("Step '%s' failed with exit code %d", step, result.returncode)
+            sys.exit(result.returncode)
 
         logger.info("Step '%s' complete.", step)
 
@@ -75,7 +84,7 @@ if __name__ == "__main__":
         "--steps",
         nargs="+",
         default=["all"],
-        help=f"Steps to run: {list(STEP_MODULES.keys())} or 'all' (default: all)",
+        help=f"Steps to run: {list(STEP_SCRIPTS.keys())} or 'all' (default: all)",
     )
     args = parser.parse_args()
     main(args.config, args.steps)

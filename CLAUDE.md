@@ -21,7 +21,7 @@ on any environment — mobile, laptop, edge devices, etc.
 
 ### 3. Measure First
 - Always measure baseline performance before optimization
-- Compare pre/post quantization with at least 3 metrics: quality (BLEU/COMET), speed (tokens/sec), memory (peak RSS)
+- Compare pre/post quantization with at least 3 metrics: quality (BLEU/chrF++ in Phase 1, add COMET in Phase 2), speed (tokens/sec), memory (peak RSS)
 - Minimum 3 repeated measurements for statistical significance
 
 ### 4. Progressive Complexity

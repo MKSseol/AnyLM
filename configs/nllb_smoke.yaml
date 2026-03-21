@@ -1,0 +1,41 @@
+# Smoke test configuration — minimal run for pipeline validation
+experiment:
+  name: "nllb-smoke"
+  description: "Quick pipeline validation with minimal samples"
+  date: "2026-03-21"
+  author: "minkyu"
+
+# Model settings
+model:
+  name: "facebook/nllb-200-distilled-600M"
+  revision: "main"
+  framework: "transformers"
+
+# Quantization settings
+quantization:
+  method: "none"
+  calibration_samples: 0
+  group_size: 0
+
+# Benchmark settings (minimal for fast validation)
+benchmark:
+  language_pairs:
+    - "kor_Hang-eng_Latn"
+  test_dataset: "flores200"
+  num_samples: 5
+  num_repeats: 1
+  metrics:
+    - "bleu"
+    - "latency_p50"
+    - "peak_memory_mb"
+  batch_sizes:
+    - 1
+
+# Hardware environment
+hardware:
+  device: "cpu"
+  max_memory_mb: 8192
+  num_threads: 4
+
+# Seed
+seed: 42

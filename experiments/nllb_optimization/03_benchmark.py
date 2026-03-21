@@ -116,6 +116,20 @@ def _test_memory_limit(config: dict, memory_limit_mb: int) -> dict:
     }
 
 
+def _get_default_lang_pair(config: dict) -> tuple[str, str]:
+    """Extract source and target language from the first configured language pair.
+
+    Args:
+        config: Experiment configuration.
+
+    Returns:
+        Tuple of (source_lang, target_lang).
+    """
+    lang_pair = config["benchmark"]["language_pairs"][0]
+    src_lang, tgt_lang = lang_pair.split("-")
+    return src_lang, tgt_lang
+
+
 def _test_thread_count(config: dict, num_threads: int) -> dict:
     """Benchmark with a specific thread count.
 
@@ -138,8 +152,8 @@ def _test_thread_count(config: dict, num_threads: int) -> dict:
             quantizer = DynamicInt8Quantizer()
             model = quantizer.quantize(model, config.get("quantization", {}))
 
-        # Simple latency test
-        tokenizer.src_lang = "eng_Latn"
+        src_lang, tgt_lang = _get_default_lang_pair(config)
+        tokenizer.src_lang = src_lang
         sample_sentences = [f"This is test sentence number {i}." for i in range(20)]
 
         def translate(text: str) -> str:
@@ -147,7 +161,7 @@ def _test_thread_count(config: dict, num_threads: int) -> dict:
             with torch.no_grad():
                 generated = model.generate(
                     **inputs,
-                    forced_bos_token_id=tokenizer.convert_tokens_to_ids("kor_Hang"),
+                    forced_bos_token_id=tokenizer.convert_tokens_to_ids(tgt_lang),
                     max_new_tokens=128,
                 )
             return tokenizer.batch_decode(generated, skip_special_tokens=True)[0]
@@ -187,7 +201,8 @@ def _test_batch_size(config: dict, batch_size: int) -> dict:
             quantizer = DynamicInt8Quantizer()
             model = quantizer.quantize(model, config.get("quantization", {}))
 
-        tokenizer.src_lang = "eng_Latn"
+        src_lang, tgt_lang = _get_default_lang_pair(config)
+        tokenizer.src_lang = src_lang
         sentences = [f"This is test sentence number {i}." for i in range(batch_size * 5)]
 
         # Process in batches
@@ -204,7 +219,7 @@ def _test_batch_size(config: dict, batch_size: int) -> dict:
             with torch.no_grad():
                 model.generate(
                     **inputs,
-                    forced_bos_token_id=tokenizer.convert_tokens_to_ids("kor_Hang"),
+                    forced_bos_token_id=tokenizer.convert_tokens_to_ids(tgt_lang),
                     max_new_tokens=128,
                 )
             total_time += time.perf_counter() - t0

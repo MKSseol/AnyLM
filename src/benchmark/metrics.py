@@ -52,6 +52,33 @@ def compute_chrf(hypotheses: list[str], references: list[str]) -> float:
     return result.score
 
 
+def compute_comet(
+    sources: list[str],
+    hypotheses: list[str],
+    references: list[str],
+) -> float:
+    """Compute COMET score for translation quality evaluation.
+
+    Requires the unbabel-comet package (Phase 2).
+
+    Args:
+        sources: List of source sentences.
+        hypotheses: List of model-generated translations.
+        references: List of reference translations.
+
+    Returns:
+        COMET score as a float.
+
+    Raises:
+        NotImplementedError: COMET is planned for Phase 2.
+    """
+    raise NotImplementedError(
+        "COMET metric is planned for Phase 2. "
+        "Install unbabel-comet and implement this function. "
+        "For now, use compute_bleu() or compute_chrf()."
+    )
+
+
 def measure_latency(
     translate_fn: Callable[..., Any],
     inputs: list[str],

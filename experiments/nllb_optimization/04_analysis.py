@@ -221,12 +221,45 @@ def _analyze_language_sensitivity(
     return results
 
 
+def _load_previous_bleu(experiment_name: str) -> float | None:
+    """Load mean BLEU from a previous experiment's most recent result.
+
+    Args:
+        experiment_name: Name of the experiment (e.g., "nllb-baseline").
+
+    Returns:
+        Mean BLEU score or None if not found.
+    """
+    results_dir = Path(f"data/results/{experiment_name}")
+    if not results_dir.exists():
+        return None
+
+    result_files = sorted(results_dir.glob(f"{experiment_name}_*.json"), reverse=True)
+    if not result_files:
+        return None
+
+    try:
+        with open(result_files[0]) as f:
+            data = json.load(f)
+        bleu_scores = []
+        for pair_metrics in data.get("results", {}).values():
+            bleu = pair_metrics.get("bleu", {})
+            if isinstance(bleu, dict) and "mean" in bleu:
+                bleu_scores.append(bleu["mean"])
+        return float(np.mean(bleu_scores)) if bleu_scores else None
+    except (json.JSONDecodeError, KeyError):
+        return None
+
+
 def _generate_pareto_data(
     original_model: object,
     quantized_model: object,
     quantizer: DynamicInt8Quantizer,
 ) -> dict:
     """Generate data points for a quality vs. size Pareto frontier graph.
+
+    Automatically loads BLEU scores from previous experiment results
+    in data/results/ if available.
 
     Args:
         original_model: Original FP32 model.
@@ -239,33 +272,42 @@ def _generate_pareto_data(
     original_size = quantizer._estimate_model_size(original_model)
     quantized_size = quantizer.get_model_size_mb(quantized_model)
 
-    # In a full experiment, BLEU scores would come from actual benchmark runs.
-    # Here we provide the data structure for the Pareto plot.
+    # Try to load actual BLEU scores from previous experiments
+    baseline_bleu = _load_previous_bleu("nllb-baseline")
+    int8_bleu = _load_previous_bleu("nllb-int8")
+
+    if baseline_bleu is not None:
+        logger.info("Loaded baseline BLEU from previous results: %.2f", baseline_bleu)
+    if int8_bleu is not None:
+        logger.info("Loaded INT8 BLEU from previous results: %.2f", int8_bleu)
+
     data_points = [
         {
             "method": "FP32 (original)",
             "bits": 32,
             "size_mb": original_size,
-            "bleu_placeholder": "Run 01_baseline.py for actual value",
+            "bleu": baseline_bleu,
         },
         {
             "method": "Dynamic INT8",
             "bits": 8,
             "size_mb": quantized_size,
-            "bleu_placeholder": "Run 02_quantize.py for actual value",
+            "bleu": int8_bleu,
         },
-        # Placeholder for future quantization methods
         {
             "method": "GPTQ 4-bit (Phase 2)",
             "bits": 4,
-            "size_mb": original_size * 0.125,  # Rough estimate
-            "bleu_placeholder": "Phase 2",
+            "size_mb": original_size * 0.125,
+            "bleu": None,
         },
     ]
 
+    has_bleu = baseline_bleu is not None or int8_bleu is not None
     return {
         "data_points": data_points,
-        "note": "Populate BLEU values from actual experiment results for the final Pareto graph.",
+        "note": "BLEU values loaded from experiment results."
+        if has_bleu
+        else "Run 01_baseline.py and 02_quantize.py first to populate BLEU values.",
     }
 
 
